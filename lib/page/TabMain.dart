@@ -10,12 +10,14 @@ import 'HomePage/Example4.dart';
 import 'HomePage/My.dart';
 import 'ShoppingCart.dart';
 import '../components/utils.dart';
-
+import 'package:flutter/cupertino.dart';
+import 'package:badge/badge.dart';
 class Choice {
   const Choice({this.title, this.icon});
   final String title;
   final IconData icon;
 }
+
 // class Play{
 //   const Play({this.offset});
 //   final int offset;
@@ -54,8 +56,11 @@ class _TabMainState extends State<TabMain> {
 
   Future<Null> _getPlaylist() async {
     var httpClient = new HttpClient();
-    
-    var uri = new Uri.http('www.hjbnice.com', '/music/top/playlist', );
+
+    var uri = new Uri.http(
+      'www.hjbnice.com',
+      '/music/top/playlist',
+    );
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
     var responseBody = await response.transform(UTF8.decoder).join();
@@ -70,50 +75,50 @@ class _TabMainState extends State<TabMain> {
 
   @override
   Widget build(BuildContext context) {
-    // Column buildButtonColumn(IconData icon, String label, int index) {
-    //   return new Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       new InkWell(
-    //         child: new Icon(icon, color: _tabActiveColor(index)),
-    //         onTap: () {
-    //           setState(() {
-    //             tabIndex = index;
-    //           });
-    //         },
-    //       ),
-    //       new Container(
-    //         margin: const EdgeInsets.only(top: 8.0),
-    //         child: new Text(
-    //           label,
-    //           style: new TextStyle(
-    //             fontSize: 12.0,
-    //             fontWeight: FontWeight.w400,
-    //             color: _tabActiveColor(index),
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // }
+    GestureDetector buildButtonColumn(
+      IconData icon,
+      String label,
+      int index,
+    ) {
+      return new GestureDetector(
+        child: new Padding(
+          padding: EdgeInsets.only(left: 4.0,right: 4.0),
+          child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Icon(icon, color: _tabActiveColor(index)),
+            new Text(label,
+                style: new TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                  color: _tabActiveColor(index),
+                )),
+          ],
+        ),
+        ),
+        onTap: () {
+          setState(() {
+            tabIndex = index;
+          });
+        },
+      );
+    }
 
-    // Widget buttonSection = new Container(
-    //   color: Colors.white70,
-    //   height: 80.0,
-    //   padding: const EdgeInsets.only(top: 8.0),
-    //   child: new Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //     children: [
-    //       buildButtonColumn(Icons.home, 'home', 0),
-    //       buildButtonColumn(Icons.view_list, 'category', 1),
-    //       buildButtonColumn(Icons.label, 'promotion', 2),
-    //       buildButtonColumn(Icons.add_shopping_cart, 'cart', 3),
-    //       buildButtonColumn(Icons.person, 'mine', 4)
-    //     ],
-    //   ),
-    // );
-
+    Widget buttonNavBarSection = new Container(
+      color: Colors.white70,
+      height: 55.0,
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          buildButtonColumn(Icons.home, '首页', 0),
+          buildButtonColumn(Icons.view_list, '分类', 1),
+          buildButtonColumn(Icons.label, '促销', 2),
+          buildButtonColumn(Icons.add_shopping_cart, '购物车', 3),
+          buildButtonColumn(Icons.person, '我的', 4)
+        ],
+      ),
+    );
     return new Scaffold(
       key: _scaffoldKey,
       body: new Stack(
@@ -138,22 +143,33 @@ class _TabMainState extends State<TabMain> {
             child: new MyPage(scaffoldKey: _scaffoldKey),
             offstage: tabIndex != 4,
           ),
-          // new Positioned(
-          //   width: getScreenWidth(context),
-          //   bottom: 0.0,
-          //   child: buttonSection,
-          // ),
-          // new Stack(
-          //   children: <Widget>[
-          //     new Positioned(
-          //       bottom: 60.0,
-          //       left: getScreenWidth(context) -
-          //           getScreenWidth(context) / 5 -
-          //           30.0,
-          //       child: new Text('1'),
-          //     )
-          //   ],
-          // ),
+          new Stack(
+            children: <Widget>[
+              new Positioned(
+                bottom: 0.0,
+                width: getScreenWidth(context),
+                child: buttonNavBarSection,
+              )
+            ],
+          ),
+          new Stack(
+            children: <Widget>[
+              new Positioned(
+                  bottom: 45.0,
+                  left: (getScreenWidth(context) / 5) * 3 + 30,
+                  child: new Container(
+                    padding: EdgeInsets.only(left: 5.0,right: 5.0),
+                    color: Colors.red,
+                    // decoration: const BoxDecoration(
+                    //   borderRadius:const BorderRadius.all(Radius.circular(2.0))
+                    // ),
+                    child: new Text(
+                      '12',
+                      style: new TextStyle(color: Colors.white),
+                    ),
+                  )),
+            ],
+          )
         ],
       ),
       // drawer: new Drawer(
@@ -171,39 +187,31 @@ class _TabMainState extends State<TabMain> {
       //     ],
       //   ),
       // ),
-      bottomNavigationBar: new BottomNavigationBar(
-        items: [
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.home, color: _tabActiveColor(0)),
-              title: new Text('首页',
-                  style: new TextStyle(color: _tabActiveColor(0)))),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.view_list, color: _tabActiveColor(1)),
-              title: new Text('分类',
-                  style: new TextStyle(color: _tabActiveColor(1)))),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.label, color: _tabActiveColor(2)),
-              title: new Text('促销',
-                  style: new TextStyle(color: _tabActiveColor(2)))),
-          new BottomNavigationBarItem(
-              icon:
-                  new Icon(Icons.add_shopping_cart, color: _tabActiveColor(3)),
-              title: new Text('购物车',
-                  style: new TextStyle(color: _tabActiveColor(3)))),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.person, color: _tabActiveColor(4)),
-              title: new Text('我的',
-                  style: new TextStyle(color: _tabActiveColor(4)))),
-        ],
-        onTap: (index) {
-          setState(() {
-            tabIndex = index;
-          });
-        },
-        currentIndex: tabIndex,
-        fixedColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-      ),
+      // bottomNavigationBar: new CupertinoTabBar(
+      //     items: [
+      //       new BottomNavigationBarItem(
+      //           icon: new Icon(Icons.home), title: new Text('首页')),
+      //       new BottomNavigationBarItem(
+      //           icon: new Icon(Icons.view_list), title: new Text('分类')),
+      //       new BottomNavigationBarItem(
+      //           icon: new Icon(Icons.label), title: new Text('促销')),
+      //       new BottomNavigationBarItem(
+      //           icon: new Icon(Icons.add_shopping_cart),
+      //           title: new Text('购物车')),
+      //       new BottomNavigationBarItem(
+      //           icon: new Icon(Icons.person), title: new Text('我的')),
+      //     ],
+      //     onTap: (index) {
+      //       setState(() {
+      //         tabIndex = index;
+      //       });
+      //     },
+      //     iconSize: 28.0,
+      //     currentIndex: tabIndex,
+      //     activeColor: Colors.green
+      //     // fixedColor: Colors.grey,
+      //     // type: BottomNavigationBarType.fixed,
+      //     ),
     );
   }
 }

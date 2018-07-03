@@ -3,6 +3,9 @@ import 'HomeCarousel.dart';
 import 'HomeHeader.dart';
 import 'HomeBody.dart';
 import '../../ImagePickerPage.dart';
+import 'dart:async';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
 
 class Choice {
   const Choice({this.title, this.icon});
@@ -34,6 +37,13 @@ class HomePageState extends State<HomePage> {
     'https://ww4.sinaimg.cn/thumb180/68751109ly1fsq0p360w0j22c03407wo.jpg',
     'https://ww4.sinaimg.cn/thumb180/68751109ly1fsq0oawb9jj23402c04qx.jpg'
   ];
+  String barcode = "";
+
+  @override
+  initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget buttonSection = new Container(
@@ -75,13 +85,8 @@ class HomePageState extends State<HomePage> {
           new IconButton(
             // action button
             icon: new Icon(Icons.crop_free),
-            onPressed: () async {
-              Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (context) =>
-                        new ImagePickerPage(title: 'odos[index]'),
-                  ));
+            onPressed: (){
+              scan(context);
             },
           )
         ],
@@ -97,5 +102,40 @@ class HomePageState extends State<HomePage> {
         ],
       )),
     );
+  }
+
+  Future scan(BuildContext context) async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      setState(() => this.barcode = barcode);
+      await showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text("TITLE"),
+            content: new Text("TESTBODY"),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ));
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        print(e.toString());
+        setState(() {
+          this.barcode = 'The user did not grant the camera permission!';
+        });
+      } else {
+        setState(() => this.barcode = 'Unknown error: $e');
+      }
+    } on FormatException {
+      setState(() => this.barcode =
+          'null (User returned using the "back"-button before scanning anything. Result)');
+    } catch (e) {
+      setState(() => this.barcode = 'Unknown error: $e');
+    }
   }
 }
