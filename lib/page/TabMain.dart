@@ -82,7 +82,7 @@ class _TabMainState extends State<TabMain> {
     ) {
       return new GestureDetector(
         child: new Padding(
-          padding: EdgeInsets.only(left: 4.0,right: 4.0),
+          padding: EdgeInsets.only(left: 10.0,right: 10.0),
           child: new Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -172,21 +172,21 @@ class _TabMainState extends State<TabMain> {
           )
         ],
       ),
-      // drawer: new Drawer(
-      //   child: new Column(
-      //     children: <Widget>[
-      //       new MediaQuery.removePadding(
-      //         context: context,
-      //         // DrawerHeader consumes top MediaQuery padding.
-      //         removeTop: true,
-      //         child: const ListTile(
-      //           leading: const Icon(Icons.payment),
-      //           title: const Text('Placeholder'),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
+      drawer: new Drawer(
+        child: new Column(
+          children: <Widget>[
+            new MediaQuery.removePadding(
+              context: context,
+              // DrawerHeader consumes top MediaQuery padding.
+              removeTop: true,
+              child: const ListTile(
+                leading: const Icon(Icons.payment),
+                title: const Text('Placeholder'),
+              ),
+            ),
+          ],
+        ),
+      ),
       // bottomNavigationBar: new CupertinoTabBar(
       //     items: [
       //       new BottomNavigationBarItem(
