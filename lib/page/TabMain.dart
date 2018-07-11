@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'HomePage/Home.dart';
+import 'HomePage/Example1.dart';
 import 'HomePage/Example2.dart';
 import 'HomePage/Example3.dart';
 import 'HomePage/Example4.dart';
